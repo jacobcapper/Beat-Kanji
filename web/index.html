@@ -168,30 +168,16 @@
             color: white;
         }
 
-        .difficulty-btn.easy {
-            border-color: #00ff88;
-        }
-
-        .difficulty-btn.medium {
-            border-color: #ffaa00;
-        }
-
-        .difficulty-btn.hard {
-            border-color: #ff4444;
-        }
-
-        .difficulty-btn:hover, .difficulty-btn:active {
-            transform: scale(1.05);
-        }
-
+        .difficulty-btn.easy { border-color: #00ff88; }
+        .difficulty-btn.medium { border-color: #ffaa00; }
+        .difficulty-btn.hard { border-color: #ff4444; }
+        .difficulty-btn:hover { transform: scale(1.05); }
         .difficulty-btn.easy:hover { background: rgba(0,255,136,0.2); }
         .difficulty-btn.medium:hover { background: rgba(255,170,0,0.2); }
         .difficulty-btn.hard:hover { background: rgba(255,68,68,0.2); }
 
         /* Game Screen */
-        #game-screen {
-            position: relative;
-        }
+        #game-screen { position: relative; }
 
         #game-canvas {
             position: absolute;
@@ -221,10 +207,7 @@
             text-shadow: 0 0 10px #00d4ff;
         }
 
-        .lives-display {
-            display: flex;
-            gap: 8px;
-        }
+        .lives-display { display: flex; gap: 8px; }
 
         .heart {
             font-size: 1.5rem;
@@ -236,9 +219,7 @@
             text-shadow: 0 0 10px #ff4444;
         }
 
-        .heart.dead {
-            color: #444;
-        }
+        .heart.dead { color: #444; }
 
         .pause-btn {
             position: absolute;
@@ -271,15 +252,8 @@
             z-index: 20;
         }
 
-        .pause-overlay.active {
-            display: flex;
-        }
-
-        .pause-title {
-            font-size: 2rem;
-            color: #ff00ff;
-            margin-bottom: 30px;
-        }
+        .pause-overlay.active { display: flex; }
+        .pause-title { font-size: 2rem; color: #ff00ff; margin-bottom: 30px; }
 
         /* Game Over */
         .game-over-title {
@@ -302,10 +276,7 @@
             margin-bottom: 30px;
         }
 
-        .tier-display {
-            font-size: 4rem;
-            margin-bottom: 30px;
-        }
+        .tier-display { font-size: 4rem; margin-bottom: 30px; }
 
         /* Back button */
         .back-btn {
@@ -328,26 +299,6 @@
             margin-bottom: 20px;
         }
 
-        /* Kanji display area */
-        .kanji-area {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 250px;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (min-width: 768px) {
-            .kanji-area {
-                width: 350px;
-                height: 350px;
-            }
-        }
-
         /* Progress bar at bottom */
         .progress-bar {
             position: absolute;
@@ -367,59 +318,28 @@
         /* Feedback text */
         .feedback {
             position: absolute;
-            top: 50%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             opacity: 0;
-            transition: all 0.3s;
             pointer-events: none;
             z-index: 15;
         }
 
-        .feedback.perfect {
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff88;
-        }
-
-        .feedback.good {
-            color: #ffaa00;
-            text-shadow: 0 0 20px #ffaa00;
-        }
-
-        .feedback.miss {
-            color: #ff4444;
-            text-shadow: 0 0 20px #ff4444;
-        }
+        .feedback.perfect { color: #00ff88; text-shadow: 0 0 30px #00ff88; }
+        .feedback.good { color: #ffaa00; text-shadow: 0 0 30px #ffaa00; }
+        .feedback.miss { color: #ff4444; text-shadow: 0 0 30px #ff4444; }
 
         .feedback.show {
-            opacity: 1;
-            animation: feedbackPop 0.5s ease-out forwards;
+            animation: feedbackPop 0.6s ease-out forwards;
         }
 
         @keyframes feedbackPop {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
-        }
-
-        /* Conveyor lines */
-        .conveyor-container {
-            position: absolute;
-            bottom: calc(10% + 250px + 20px);
-            left: 50%;
-            transform: translateX(-50%);
-            width: 250px;
-            height: 60px;
-            pointer-events: none;
-        }
-
-        @media (min-width: 768px) {
-            .conveyor-container {
-                bottom: calc(10% + 350px + 20px);
-                width: 350px;
-            }
+            30% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            100% { transform: translate(-50%, -70%) scale(1); opacity: 0; }
         }
 
         /* Settings */
@@ -437,9 +357,7 @@
             align-items: center;
         }
 
-        .setting-label {
-            font-size: 1.1rem;
-        }
+        .setting-label { font-size: 1.1rem; }
 
         .volume-slider {
             width: 150px;
@@ -546,12 +464,9 @@
             </div>
             <button class="pause-btn" onclick="togglePause()">⏸</button>
             <div class="feedback" id="feedback"></div>
-            <div class="conveyor-container" id="conveyor"></div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
-
-            <!-- Pause Overlay -->
             <div class="pause-overlay" id="pause-overlay">
                 <div class="pause-title">Paused</div>
                 <button class="menu-btn" onclick="resumeGame()">Resume</button>
@@ -572,6 +487,16 @@
     </div>
 
     <script>
+        // ===== GAME CONSTANTS =====
+        const WINDOW_BEFORE_ARRIVAL = 0.75;
+        const WINDOW_AFTER_ARRIVAL = 0.5;
+        const FLIGHT_DURATION = 2.0;
+        const INTRO_SKIP_TIME = 3.0;
+        const GAP_BETWEEN_KANJI_MS = 1500;
+        const SPAWN_DEPTH = 10.0;
+        const PERSPECTIVE_FACTOR = 0.5;
+        const CONVEYOR_HORIZON_Y = 0.35;
+
         // ===== GAME STATE =====
         let kanjiData = [];
         let beatmaps = {};
@@ -579,14 +504,12 @@
         let selectedSong = null;
         let selectedBeatmap = null;
 
-        // Settings
         let settings = {
             musicVolume: 0.7,
             showMeaning: false,
             enabledCategories: new Set(['n5', 'n4', 'n3', 'hiragana', 'katakana'])
         };
 
-        // Game state
         let gameState = {
             score: 0,
             lives: 4,
@@ -600,28 +523,26 @@
             isPaused: false,
             isPlaying: false,
             startTime: 0,
+            pauseTime: 0,
+            totalPausedTime: 0,
             difficulty: 'easy',
             drawnPoints: [],
-            isDrawing: false
+            isDrawing: false,
+            isDrawingInWindow: false,
+            completedStrokes: [],
+            flyingStrokes: [],
+            conveyorLines: [],
+            nextConveyorSpawnTime: 0,
+            nextSpawnIndex: 0
         };
 
-        // Audio
         let audioContext = null;
         let audioBuffer = null;
         let audioSource = null;
         let gainNode = null;
         let menuAudio = null;
-
-        // Canvas
         let canvas, ctx;
         let animationId = null;
-
-        // Timing constants
-        const WINDOW_BEFORE_ARRIVAL = 0.75;
-        const WINDOW_AFTER_ARRIVAL = 0.5;
-        const FLIGHT_DURATION = 2.0;
-        const INTRO_SKIP_TIME = 3.0;
-        const GAP_BETWEEN_KANJI_MS = 1500;
 
         // ===== INITIALIZATION =====
         async function init() {
@@ -629,26 +550,16 @@
             ctx = canvas.getContext('2d');
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
-
-            // Load settings from localStorage
             loadSettings();
 
-            // Setup audio context
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             gainNode = audioContext.createGain();
             gainNode.connect(audioContext.destination);
             gainNode.gain.value = settings.musicVolume;
 
-            // Load data
             await loadGameData();
-
-            // Setup input handlers
             setupInputHandlers();
-
-            // Show menu
             showScreen('menu-screen');
-
-            // Start menu music
             playMenuMusic();
         }
 
@@ -659,18 +570,15 @@
 
         async function loadGameData() {
             const progressBar = document.getElementById('loading-progress');
-
-            // Load kanji data
             progressBar.style.width = '20%';
+
             const kanjiResponse = await fetch('kanji-data.json');
             kanjiData = await kanjiResponse.json();
-
-            // Load categories
             progressBar.style.width = '40%';
+
             const catResponse = await fetch('data/categories.json');
             categories = await catResponse.json();
 
-            // Load beatmaps
             const beatmapFiles = [
                 'adagio-for-strings', 'canon-in-d', 'clair-de-lune',
                 'digital-heartbeat', 'hungarian-rhapsody-no-2', 'moonlight-sonate',
@@ -678,13 +586,10 @@
             ];
 
             for (let i = 0; i < beatmapFiles.length; i++) {
-                const file = beatmapFiles[i];
                 try {
-                    const response = await fetch(`data/${file}.json`);
-                    beatmaps[file] = await response.json();
-                } catch (e) {
-                    console.error(`Failed to load ${file}:`, e);
-                }
+                    const response = await fetch(`data/${beatmapFiles[i]}.json`);
+                    beatmaps[beatmapFiles[i]] = await response.json();
+                } catch (e) {}
                 progressBar.style.width = `${40 + (i + 1) / beatmapFiles.length * 50}%`;
             }
 
@@ -700,58 +605,43 @@
                     const parsed = JSON.parse(saved);
                     settings.musicVolume = parsed.musicVolume ?? 0.7;
                     settings.showMeaning = parsed.showMeaning ?? false;
-                    if (parsed.enabledCategories) {
-                        settings.enabledCategories = new Set(parsed.enabledCategories);
-                    }
+                    if (parsed.enabledCategories) settings.enabledCategories = new Set(parsed.enabledCategories);
                 }
-            } catch (e) {
-                console.error('Failed to load settings:', e);
-            }
+            } catch (e) {}
         }
 
         function saveSettings() {
-            try {
-                localStorage.setItem('beatkanji-settings', JSON.stringify({
-                    musicVolume: settings.musicVolume,
-                    showMeaning: settings.showMeaning,
-                    enabledCategories: Array.from(settings.enabledCategories)
-                }));
-            } catch (e) {
-                console.error('Failed to save settings:', e);
-            }
+            localStorage.setItem('beatkanji-settings', JSON.stringify({
+                musicVolume: settings.musicVolume,
+                showMeaning: settings.showMeaning,
+                enabledCategories: Array.from(settings.enabledCategories)
+            }));
         }
 
-        // ===== UI FUNCTIONS =====
+        // ===== UI =====
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-
-            if (screenId === 'menu-screen') {
-                playMenuMusic();
-            }
+            if (screenId === 'menu-screen') playMenuMusic();
         }
 
         function populateSongList() {
             const songList = document.getElementById('song-list');
             songList.innerHTML = '';
 
-            // Group songs by category
             const songsByCategory = {};
             for (const [name, beatmap] of Object.entries(beatmaps)) {
                 const category = beatmap.meta.category || 'Uncategorized';
-                if (!songsByCategory[category]) {
-                    songsByCategory[category] = [];
-                }
+                if (!songsByCategory[category]) songsByCategory[category] = [];
                 songsByCategory[category].push({ name, beatmap });
             }
 
-            // Sort by categories order
             const orderedCategories = categories.map(c => c.name);
             const allCategories = [...new Set([...orderedCategories, ...Object.keys(songsByCategory)])];
 
             for (const category of allCategories) {
                 const songs = songsByCategory[category];
-                if (!songs || songs.length === 0) continue;
+                if (!songs?.length) continue;
 
                 const header = document.createElement('div');
                 header.className = 'category-header';
@@ -761,21 +651,12 @@
                 for (const { name, beatmap } of songs) {
                     const item = document.createElement('div');
                     item.className = 'song-item';
-                    item.innerHTML = `
-                        <div class="song-title">${beatmap.meta.title || name}</div>
-                        <div class="song-info">${beatmap.meta.bpm} BPM · ${Math.floor(beatmap.meta.total_duration / 60)}:${String(Math.floor(beatmap.meta.total_duration % 60)).padStart(2, '0')}</div>
-                    `;
-                    item.onclick = () => selectSong(name, beatmap);
+                    item.innerHTML = `<div class="song-title">${beatmap.meta.title || name}</div>
+                        <div class="song-info">${beatmap.meta.bpm} BPM · ${Math.floor(beatmap.meta.total_duration / 60)}:${String(Math.floor(beatmap.meta.total_duration % 60)).padStart(2, '0')}</div>`;
+                    item.onclick = () => { selectedSong = name; selectedBeatmap = beatmap; document.getElementById('selected-song-title').textContent = beatmap.meta.title || name; showScreen('difficulty-screen'); };
                     songList.appendChild(item);
                 }
             }
-        }
-
-        function selectSong(name, beatmap) {
-            selectedSong = name;
-            selectedBeatmap = beatmap;
-            document.getElementById('selected-song-title').textContent = beatmap.meta.title || name;
-            showScreen('difficulty-screen');
         }
 
         function setupSettingsUI() {
@@ -785,22 +666,16 @@
 
             const container = document.getElementById('category-checkboxes');
             container.innerHTML = '';
-
-            const allCategories = ['n5', 'n4', 'n3', 'n2', 'n1', 'hiragana', 'katakana'];
+            const cats = ['n5', 'n4', 'n3', 'n2', 'n1', 'hiragana', 'katakana'];
             const labels = { n5: 'N5', n4: 'N4', n3: 'N3', n2: 'N2', n1: 'N1', hiragana: 'Hiragana', katakana: 'Katakana' };
 
-            for (const cat of allCategories) {
+            for (const cat of cats) {
                 const item = document.createElement('button');
                 item.className = 'checkbox-item' + (settings.enabledCategories.has(cat) ? ' active' : '');
                 item.textContent = labels[cat];
                 item.onclick = () => {
-                    if (settings.enabledCategories.has(cat)) {
-                        settings.enabledCategories.delete(cat);
-                        item.classList.remove('active');
-                    } else {
-                        settings.enabledCategories.add(cat);
-                        item.classList.add('active');
-                    }
+                    settings.enabledCategories.has(cat) ? settings.enabledCategories.delete(cat) : settings.enabledCategories.add(cat);
+                    item.classList.toggle('active');
                     saveSettings();
                 };
                 container.appendChild(item);
@@ -809,12 +684,8 @@
 
         function updateVolume() {
             settings.musicVolume = document.getElementById('music-volume').value / 100;
-            if (gainNode) {
-                gainNode.gain.value = settings.musicVolume;
-            }
-            if (menuAudio) {
-                menuAudio.volume = settings.musicVolume;
-            }
+            if (gainNode) gainNode.gain.value = settings.musicVolume;
+            if (menuAudio) menuAudio.volume = settings.musicVolume;
             saveSettings();
         }
 
@@ -825,25 +696,16 @@
             saveSettings();
         }
 
-        // ===== AUDIO FUNCTIONS =====
+        // ===== AUDIO =====
         function playMenuMusic() {
-            if (menuAudio) {
-                menuAudio.play().catch(() => {});
-                return;
-            }
-
+            if (menuAudio) { menuAudio.play().catch(() => {}); return; }
             menuAudio = new Audio('audio/menu.mp3');
             menuAudio.loop = true;
             menuAudio.volume = settings.musicVolume;
             menuAudio.play().catch(() => {});
         }
 
-        function stopMenuMusic() {
-            if (menuAudio) {
-                menuAudio.pause();
-                menuAudio.currentTime = 0;
-            }
-        }
+        function stopMenuMusic() { if (menuAudio) { menuAudio.pause(); menuAudio.currentTime = 0; } }
 
         async function loadSongAudio(filename) {
             const response = await fetch(`audio/${filename}`);
@@ -852,99 +714,54 @@
         }
 
         function playSong() {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-
+            if (audioContext.state === 'suspended') audioContext.resume();
             audioSource = audioContext.createBufferSource();
             audioSource.buffer = audioBuffer;
             audioSource.connect(gainNode);
             audioSource.start(0);
             gameState.startTime = audioContext.currentTime;
-
-            audioSource.onended = () => {
-                if (gameState.isPlaying && !gameState.isPaused) {
-                    endGame(true);
-                }
-            };
+            audioSource.onended = () => { if (gameState.isPlaying && !gameState.isPaused) endGame(true); };
         }
 
-        function stopSong() {
-            if (audioSource) {
-                try {
-                    audioSource.stop();
-                } catch (e) {}
-                audioSource = null;
-            }
-        }
+        function stopSong() { if (audioSource) { try { audioSource.stop(); } catch (e) {} audioSource = null; } }
 
         function getCurrentTime() {
-            if (!gameState.isPlaying || gameState.isPaused) return 0;
-            return audioContext.currentTime - gameState.startTime;
+            if (!gameState.isPlaying) return 0;
+            if (gameState.isPaused) return gameState.pauseTime - gameState.startTime - gameState.totalPausedTime;
+            return audioContext.currentTime - gameState.startTime - gameState.totalPausedTime;
         }
 
-        // ===== GAME FUNCTIONS =====
+        // ===== GAME =====
         async function startGame(difficulty) {
             stopMenuMusic();
 
             gameState = {
-                score: 0,
-                lives: 4,
-                maxLives: 4,
-                currentKanji: null,
-                currentKanjiIndex: 0,
-                currentStrokeIndex: 0,
-                kanjiSequence: [],
-                beatEvents: [],
-                currentBeatEventIndex: 0,
-                isPaused: false,
-                isPlaying: true,
-                startTime: 0,
-                difficulty: difficulty,
-                drawnPoints: [],
-                isDrawing: false
+                score: 0, lives: 4, maxLives: 4, currentKanji: null, currentKanjiIndex: 0, currentStrokeIndex: 0,
+                kanjiSequence: [], beatEvents: [], currentBeatEventIndex: 0, isPaused: false, isPlaying: true,
+                startTime: 0, pauseTime: 0, totalPausedTime: 0, difficulty, drawnPoints: [], isDrawing: false,
+                isDrawingInWindow: false, completedStrokes: [], flyingStrokes: [], conveyorLines: [],
+                nextConveyorSpawnTime: 0, nextSpawnIndex: 0
             };
 
-            // Filter kanji by enabled categories (handle optimized format)
-            const filteredKanji = kanjiData.filter(k =>
-                k.tags.some(t => settings.enabledCategories.has(t))
-            ).map(k => ({
-                id: k.id,
-                char: k.c,
-                strokeCount: k.sc,
-                keyword: k.kw,
-                tags: k.tags,
-                strokes: k.strokes.map(s => ({
-                    id: s.id,
-                    points: s.points,
-                    lengthClass: s.lc
-                }))
+            const filteredKanji = kanjiData.filter(k => k.tags.some(t => settings.enabledCategories.has(t))).map(k => ({
+                id: k.id, char: k.c, strokeCount: k.sc, keyword: k.kw, tags: k.tags,
+                strokes: k.strokes.map(s => ({ id: s.id, points: s.points, lengthClass: s.lc }))
             }));
 
-            if (filteredKanji.length === 0) {
-                alert('No kanji available for selected categories!');
-                showScreen('settings-screen');
-                return;
-            }
+            if (!filteredKanji.length) { alert('No kanji available!'); showScreen('settings-screen'); return; }
 
-            // Get notes for difficulty
-            const difficultyLevel = { easy: 1, medium: 2, hard: 3 }[difficulty];
             let notes = selectedBeatmap.notes.filter(n => {
                 if (difficulty === 'easy') return n.level === 1;
                 if (difficulty === 'medium') return n.level <= 2;
                 return n.level <= 3;
             }).filter(n => n.time >= INTRO_SKIP_TIME);
 
-            // Select kanji with gaps
             const result = selectKanjiWithGaps(filteredKanji, notes, GAP_BETWEEN_KANJI_MS);
             gameState.kanjiSequence = result.kanji;
             gameState.beatEvents = createBeatEvents(result.notes);
 
-            // Load audio
             showScreen('game-screen');
             await loadSongAudio(selectedBeatmap.meta.filename);
-
-            // Start game
             loadNextKanji();
             updateHUD();
             playSong();
@@ -953,180 +770,139 @@
 
         function selectKanjiWithGaps(kanjiList, notes, gapMs) {
             const gapSeconds = gapMs / 1000;
-            const selectedKanji = [];
-            const usedNotes = [];
-            let availableNotes = [...notes];
-            let shuffledKanji = shuffle([...kanjiList]);
-            let shuffleIndex = 0;
+            const selectedKanji = [], usedNotes = [];
+            let availableNotes = [...notes], shuffledKanji = shuffle([...kanjiList]), shuffleIndex = 0;
 
             while (availableNotes.length > 0) {
-                if (shuffleIndex >= shuffledKanji.length) {
-                    shuffledKanji = shuffle([...kanjiList]);
-                    shuffleIndex = 0;
-                }
-
+                if (shuffleIndex >= shuffledKanji.length) { shuffledKanji = shuffle([...kanjiList]); shuffleIndex = 0; }
                 const kanji = shuffledKanji[shuffleIndex];
-                const strokeCount = kanji.strokeCount;
-
-                if (strokeCount <= availableNotes.length) {
-                    const kanjiNotes = availableNotes.slice(0, strokeCount);
+                if (kanji.strokeCount <= availableNotes.length) {
+                    const kanjiNotes = availableNotes.slice(0, kanji.strokeCount);
                     usedNotes.push(...kanjiNotes);
                     selectedKanji.push(kanji);
-                    availableNotes = availableNotes.slice(strokeCount);
-
-                    if (kanjiNotes.length > 0 && availableNotes.length > 0) {
-                        const lastNoteTime = kanjiNotes[kanjiNotes.length - 1].time;
-                        const gapEndTime = lastNoteTime + gapSeconds;
-                        availableNotes = availableNotes.filter(n => n.time > gapEndTime);
+                    availableNotes = availableNotes.slice(kanji.strokeCount);
+                    if (kanjiNotes.length && availableNotes.length) {
+                        const lastTime = kanjiNotes[kanjiNotes.length - 1].time;
+                        availableNotes = availableNotes.filter(n => n.time > lastTime + gapSeconds);
                     }
                 } else {
-                    const smallerKanji = shuffledKanji.find(k => k.strokeCount <= availableNotes.length);
-                    if (smallerKanji) {
-                        shuffledKanji = shuffledKanji.filter(k => k.id !== smallerKanji.id);
-                        shuffledKanji.splice(shuffleIndex, 0, smallerKanji);
-                        continue;
-                    } else {
-                        break;
-                    }
+                    const smaller = shuffledKanji.find(k => k.strokeCount <= availableNotes.length);
+                    if (smaller) { shuffledKanji = shuffledKanji.filter(k => k.id !== smaller.id); shuffledKanji.splice(shuffleIndex, 0, smaller); continue; }
+                    break;
                 }
                 shuffleIndex++;
             }
-
             return { kanji: selectedKanji, notes: usedNotes };
         }
 
         function createBeatEvents(notes) {
             const events = [];
-            let kanjiIdx = 0;
-            let strokeIdx = 0;
-
+            let kanjiIdx = 0, strokeIdx = 0;
             for (const note of notes) {
-                if (kanjiIdx < gameState.kanjiSequence.length) {
-                    const currentStrokeCount = gameState.kanjiSequence[kanjiIdx].strokeCount;
-                    if (strokeIdx >= currentStrokeCount) {
-                        kanjiIdx++;
-                        strokeIdx = 0;
-                    }
-                }
-
+                if (kanjiIdx < gameState.kanjiSequence.length && strokeIdx >= gameState.kanjiSequence[kanjiIdx].strokeCount) { kanjiIdx++; strokeIdx = 0; }
                 if (kanjiIdx >= gameState.kanjiSequence.length) break;
-
-                const isRainbow = Math.random() < 0.05;
-                events.push({
-                    beatTime: note.time,
-                    kanjiIndex: kanjiIdx,
-                    strokeIndex: strokeIdx,
-                    isRainbow
-                });
+                events.push({ beatTime: note.time, kanjiIndex: kanjiIdx, strokeIndex: strokeIdx, isRainbow: Math.random() < 0.05 });
                 strokeIdx++;
             }
-
             return events;
         }
 
         function loadNextKanji() {
-            if (gameState.currentKanjiIndex >= gameState.kanjiSequence.length) {
-                gameState.currentKanji = null;
-                return;
-            }
-
+            if (gameState.currentKanjiIndex >= gameState.kanjiSequence.length) { gameState.currentKanji = null; return; }
             gameState.currentKanji = gameState.kanjiSequence[gameState.currentKanjiIndex];
             gameState.currentStrokeIndex = 0;
+            gameState.completedStrokes = [];
+            gameState.nextSpawnIndex = 0;
         }
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+        function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
-        // ===== INPUT HANDLING =====
+        // ===== INPUT =====
         function setupInputHandlers() {
             canvas.addEventListener('mousedown', handlePointerStart);
             canvas.addEventListener('mousemove', handlePointerMove);
             canvas.addEventListener('mouseup', handlePointerEnd);
             canvas.addEventListener('mouseleave', handlePointerEnd);
-
-            canvas.addEventListener('touchstart', e => {
-                e.preventDefault();
-                handlePointerStart(e.touches[0]);
-            });
-            canvas.addEventListener('touchmove', e => {
-                e.preventDefault();
-                handlePointerMove(e.touches[0]);
-            });
-            canvas.addEventListener('touchend', e => {
-                e.preventDefault();
-                handlePointerEnd();
-            });
+            canvas.addEventListener('touchstart', e => { e.preventDefault(); handlePointerStart(e.touches[0]); });
+            canvas.addEventListener('touchmove', e => { e.preventDefault(); handlePointerMove(e.touches[0]); });
+            canvas.addEventListener('touchend', e => { e.preventDefault(); handlePointerEnd(); });
         }
 
         function handlePointerStart(e) {
             if (!gameState.isPlaying || gameState.isPaused) return;
-
             const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width;
-            const y = (e.clientY - rect.top) / rect.height;
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+
+            const windowState = isStrokeWindowActive();
+            if (!windowState.isActive) {
+                // Show too early feedback
+                ctx.save();
+                ctx.fillStyle = 'rgba(255, 68, 68, 0.8)';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Too early!', x, y - 20);
+                ctx.restore();
+                return;
+            }
 
             gameState.isDrawing = true;
+            gameState.isDrawingInWindow = true;
             gameState.drawnPoints = [{ x, y }];
         }
 
         function handlePointerMove(e) {
             if (!gameState.isDrawing) return;
-
             const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width;
-            const y = (e.clientY - rect.top) / rect.height;
-
-            gameState.drawnPoints.push({ x, y });
+            gameState.drawnPoints.push({ x: e.clientX - rect.left, y: e.clientY - rect.top });
         }
 
         function handlePointerEnd() {
             if (!gameState.isDrawing) return;
             gameState.isDrawing = false;
-
-            if (gameState.drawnPoints.length >= 3) {
-                evaluateCurrentStroke();
-            }
-
+            if (gameState.isDrawingInWindow && gameState.drawnPoints.length >= 3) evaluateCurrentStroke();
+            gameState.isDrawingInWindow = false;
             gameState.drawnPoints = [];
         }
 
-        function evaluateCurrentStroke() {
-            if (!gameState.currentKanji) return;
-            if (gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) return;
-
-            const currentTime = getCurrentTime();
+        function isStrokeWindowActive() {
             const event = gameState.beatEvents[gameState.currentBeatEventIndex];
-            if (!event) return;
-
+            if (!event) return { isActive: false, progress: 0 };
+            const currentTime = getCurrentTime();
             const arrivalTime = event.beatTime;
             const windowStart = arrivalTime - WINDOW_BEFORE_ARRIVAL;
-            const windowEnd = arrivalTime + WINDOW_AFTER_ARRIVAL + getExtraTime();
+            const extraTime = getExtraTime();
+            const windowEnd = arrivalTime + WINDOW_AFTER_ARRIVAL + extraTime;
+            return { isActive: currentTime >= windowStart && currentTime <= windowEnd, progress: Math.max(0, Math.min(1, (currentTime - windowStart) / (windowEnd - windowStart))) };
+        }
 
-            if (currentTime < windowStart || currentTime > windowEnd) {
-                return; // Outside window
-            }
+        function getExtraTime() {
+            if (!gameState.currentKanji) return 0;
+            const stroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
+            return stroke ? ({ S: 0, M: 0.25, L: 0.5, XL: 0.75 }[stroke.lengthClass] || 0) : 0;
+        }
+
+        function evaluateCurrentStroke() {
+            if (!gameState.currentKanji || gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) return;
 
             const targetStroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
-            const result = evaluateStroke(gameState.drawnPoints, targetStroke);
+            const kanjiArea = getKanjiArea();
+            const normalizedDrawn = gameState.drawnPoints.map(p => ({ x: (p.x - kanjiArea.x) / kanjiArea.size, y: (p.y - kanjiArea.y) / kanjiArea.size }));
+            const result = evaluateStroke(normalizedDrawn, targetStroke);
+            const event = gameState.beatEvents[gameState.currentBeatEventIndex];
 
-            // Apply score and show feedback
             if (result === 'perfect') {
                 gameState.score += 100;
                 showFeedback('PERFECT!', 'perfect');
-                if (event.isRainbow && gameState.lives < gameState.maxLives) {
-                    gameState.lives++;
-                }
+                if (event?.isRainbow && gameState.lives < gameState.maxLives) gameState.lives++;
+                gameState.completedStrokes.push({ index: gameState.currentStrokeIndex, result: 'perfect' });
             } else if (result === 'good') {
                 gameState.score += 30;
                 showFeedback('Good', 'good');
+                gameState.completedStrokes.push({ index: gameState.currentStrokeIndex, result: 'good' });
             } else {
                 showFeedback('Miss', 'miss');
                 loseLife();
+                gameState.completedStrokes.push({ index: gameState.currentStrokeIndex, result: 'miss' });
             }
 
             advanceStroke();
@@ -1135,115 +911,58 @@
 
         function evaluateStroke(drawnPoints, targetStroke) {
             const sampleCount = 50;
-
-            // Convert to kanji coordinate space (0-1)
-            const kanjiArea = getKanjiArea();
-            const normalizedDrawn = drawnPoints.map(p => ({
-                x: (p.x * canvas.width - kanjiArea.x) / kanjiArea.size,
-                y: (p.y * canvas.height - kanjiArea.y) / kanjiArea.size
-            }));
-
-            const resampledDrawn = resamplePoints(normalizedDrawn, sampleCount);
-            const resampledTarget = resamplePoints(
-                targetStroke.points.map(p => ({ x: p[0], y: p[1] })),
-                sampleCount
-            );
+            const targetPoints = targetStroke.points.map(p => ({ x: p[0], y: 1 - p[1] }));
+            const resampledDrawn = resamplePoints(drawnPoints, sampleCount);
+            const resampledTarget = resamplePoints(targetPoints, sampleCount);
 
             let totalDist = 0;
             for (let i = 0; i < sampleCount; i++) {
-                const dx = resampledDrawn[i].x - resampledTarget[i].x;
-                const dy = resampledDrawn[i].y - resampledTarget[i].y;
-                totalDist += Math.sqrt(dx * dx + dy * dy);
+                totalDist += Math.hypot(resampledDrawn[i].x - resampledTarget[i].x, resampledDrawn[i].y - resampledTarget[i].y);
             }
             const avgDist = totalDist / sampleCount;
-
-            if (avgDist < 0.08) return 'perfect';
-            if (avgDist < 0.15) return 'good';
+            if (avgDist < 0.06) return 'perfect';
+            if (avgDist < 0.12) return 'good';
             return 'miss';
         }
 
         function resamplePoints(points, count) {
-            if (points.length < 2) {
-                return Array(count).fill(points[0] || { x: 0, y: 0 });
-            }
-
-            // Calculate total length
+            if (points.length < 2) return Array(count).fill(points[0] || { x: 0, y: 0 });
             let totalLength = 0;
-            for (let i = 0; i < points.length - 1; i++) {
-                const dx = points[i + 1].x - points[i].x;
-                const dy = points[i + 1].y - points[i].y;
-                totalLength += Math.sqrt(dx * dx + dy * dy);
-            }
-
+            for (let i = 0; i < points.length - 1; i++) totalLength += Math.hypot(points[i + 1].x - points[i].x, points[i + 1].y - points[i].y);
             const interval = totalLength / (count - 1);
             const result = [points[0]];
-            let currentDist = 0;
-            let nextDist = interval;
-            let i = 0;
-
+            let currentDist = 0, nextDist = interval, i = 0;
             while (result.length < count) {
-                if (i >= points.length - 1) {
-                    result.push(points[points.length - 1]);
-                    continue;
-                }
-
-                const dx = points[i + 1].x - points[i].x;
-                const dy = points[i + 1].y - points[i].y;
-                const segmentLength = Math.sqrt(dx * dx + dy * dy);
-
-                if (currentDist + segmentLength >= nextDist) {
-                    const t = (nextDist - currentDist) / segmentLength;
-                    result.push({
-                        x: points[i].x + dx * t,
-                        y: points[i].y + dy * t
-                    });
+                if (i >= points.length - 1) { result.push(points[points.length - 1]); continue; }
+                const dx = points[i + 1].x - points[i].x, dy = points[i + 1].y - points[i].y;
+                const segLen = Math.sqrt(dx * dx + dy * dy);
+                if (currentDist + segLen >= nextDist) {
+                    const t = (nextDist - currentDist) / segLen;
+                    result.push({ x: points[i].x + dx * t, y: points[i].y + dy * t });
                     nextDist += interval;
-                } else {
-                    currentDist += segmentLength;
-                    i++;
-                }
+                } else { currentDist += segLen; i++; }
             }
-
             return result;
-        }
-
-        function getExtraTime() {
-            if (!gameState.currentKanji) return 0;
-            const stroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
-            if (!stroke) return 0;
-            const extraTimes = { S: 0, M: 0.25, L: 0.5, XL: 0.75 };
-            return extraTimes[stroke.lengthClass] || 0;
         }
 
         function advanceStroke() {
             gameState.currentStrokeIndex++;
             gameState.currentBeatEventIndex++;
-
-            if (gameState.currentKanji && gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) {
-                gameState.currentKanjiIndex++;
-                loadNextKanji();
-            }
+            gameState.flyingStrokes = gameState.flyingStrokes.filter(fs => !(fs.kanjiIndex === gameState.currentKanjiIndex && fs.strokeIndex < gameState.currentStrokeIndex));
+            if (gameState.currentKanji && gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) { gameState.currentKanjiIndex++; loadNextKanji(); }
         }
 
-        function loseLife() {
-            gameState.lives--;
-            if (gameState.lives <= 0) {
-                endGame(false);
-            }
-        }
+        function loseLife() { gameState.lives--; if (gameState.lives <= 0) endGame(false); }
 
         function showFeedback(text, type) {
             const feedback = document.getElementById('feedback');
             feedback.textContent = text;
             feedback.className = 'feedback ' + type + ' show';
-            setTimeout(() => {
-                feedback.classList.remove('show');
-            }, 500);
+            setTimeout(() => feedback.classList.remove('show'), 600);
         }
 
         function updateHUD() {
             document.getElementById('score-display').textContent = gameState.score;
-
             const livesDisplay = document.getElementById('lives-display');
             livesDisplay.innerHTML = '';
             for (let i = 0; i < gameState.maxLives; i++) {
@@ -1257,230 +976,228 @@
         // ===== GAME LOOP =====
         function gameLoop() {
             if (!gameState.isPlaying) return;
-
-            if (!gameState.isPaused) {
-                update();
-                render();
-            }
-
+            if (!gameState.isPaused) { update(); render(); }
             animationId = requestAnimationFrame(gameLoop);
         }
 
         function update() {
             const currentTime = getCurrentTime();
+            document.getElementById('progress-fill').style.width = `${Math.min(100, (currentTime / selectedBeatmap.meta.total_duration) * 100)}%`;
 
-            // Update progress bar
-            const progress = currentTime / selectedBeatmap.meta.total_duration;
-            document.getElementById('progress-fill').style.width = `${Math.min(100, progress * 100)}%`;
+            spawnFlyingStrokes(currentTime);
+            updateFlyingStrokes(currentTime);
+            updateConveyorBelt(currentTime);
 
-            // Check for stroke timeout
+            // Timeout check
             if (gameState.currentKanji && !gameState.isDrawing) {
                 const event = gameState.beatEvents[gameState.currentBeatEventIndex];
-                if (event) {
-                    const windowEnd = event.beatTime + WINDOW_AFTER_ARRIVAL + getExtraTime();
-                    if (currentTime > windowEnd) {
-                        showFeedback('Miss', 'miss');
-                        loseLife();
-                        advanceStroke();
-                        updateHUD();
-                    }
+                if (event && currentTime > event.beatTime + WINDOW_AFTER_ARRIVAL + getExtraTime()) {
+                    showFeedback('Miss', 'miss');
+                    loseLife();
+                    gameState.completedStrokes.push({ index: gameState.currentStrokeIndex, result: 'miss' });
+                    advanceStroke();
+                    updateHUD();
                 }
-            }
-
-            // Check if all events are done
-            if (gameState.currentBeatEventIndex >= gameState.beatEvents.length && !gameState.currentKanji) {
-                // Will end when song ends
             }
         }
 
+        function spawnFlyingStrokes(currentTime) {
+            if (!gameState.currentKanji) return;
+            while (gameState.nextSpawnIndex < gameState.currentKanji.strokes.length) {
+                const globalIdx = gameState.currentBeatEventIndex + (gameState.nextSpawnIndex - gameState.currentStrokeIndex);
+                if (globalIdx >= gameState.beatEvents.length) break;
+                const event = gameState.beatEvents[globalIdx];
+                if (event.kanjiIndex !== gameState.currentKanjiIndex) break;
+                if (event.beatTime - currentTime <= FLIGHT_DURATION) {
+                    gameState.flyingStrokes.push({ kanjiIndex: event.kanjiIndex, strokeIndex: event.strokeIndex, arrivalTime: event.beatTime, isRainbow: event.isRainbow, stroke: gameState.currentKanji.strokes[event.strokeIndex] });
+                    gameState.nextSpawnIndex++;
+                } else break;
+            }
+        }
+
+        function updateFlyingStrokes(currentTime) {
+            gameState.flyingStrokes = gameState.flyingStrokes.filter(fs => fs.arrivalTime - currentTime > -0.5);
+        }
+
+        function updateConveyorBelt(currentTime) {
+            const interval = 60 / selectedBeatmap.meta.bpm;
+            if (currentTime >= gameState.nextConveyorSpawnTime) {
+                gameState.conveyorLines.push({ spawnTime: currentTime });
+                gameState.nextConveyorSpawnTime = currentTime + interval;
+            }
+            gameState.conveyorLines = gameState.conveyorLines.filter(l => currentTime - l.spawnTime < FLIGHT_DURATION);
+        }
+
+        // ===== RENDER =====
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             const currentTime = getCurrentTime();
-            const kanjiArea = getKanjiArea();
+            const centerX = canvas.width / 2, centerY = canvas.height / 2;
 
-            // Draw kanji area background
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            // Background
+            const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(canvas.width, canvas.height));
+            grad.addColorStop(0, '#1a1a2e');
+            grad.addColorStop(1, '#0f0f1a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Conveyor
+            const horizonY = canvas.height * CONVEYOR_HORIZON_Y;
+            for (const line of gameState.conveyorLines) {
+                const progress = (currentTime - line.spawnTime) / FLIGHT_DURATION;
+                if (progress < 0 || progress > 1) continue;
+                const depth = SPAWN_DEPTH * (1 - progress);
+                const scale = 1 / (1 + depth * PERSPECTIVE_FACTOR);
+                const y = centerY + (horizonY - centerY) * (1 - scale);
+                const halfWidth = canvas.width * 0.5 * scale;
+                ctx.strokeStyle = `rgba(0, 212, 255, ${0.1 + 0.4 * scale})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX - halfWidth, y);
+                ctx.lineTo(centerX + halfWidth, y);
+                ctx.stroke();
+            }
+
+            // Kanji area
+            const kanjiArea = getKanjiArea();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.roundRect(kanjiArea.x, kanjiArea.y, kanjiArea.size, kanjiArea.size, 15);
+            roundRect(ctx, kanjiArea.x, kanjiArea.y, kanjiArea.size, kanjiArea.size, 15);
             ctx.fill();
             ctx.stroke();
 
-            // Draw current kanji character (faded)
             if (gameState.currentKanji) {
+                // Kanji char
                 ctx.font = `${kanjiArea.size * 0.7}px 'Noto Sans JP'`;
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(
-                    gameState.currentKanji.char,
-                    kanjiArea.x + kanjiArea.size / 2,
-                    kanjiArea.y + kanjiArea.size / 2
-                );
+                ctx.fillText(gameState.currentKanji.char, kanjiArea.x + kanjiArea.size / 2, kanjiArea.y + kanjiArea.size / 2);
 
-                // Draw meaning if enabled
                 if (settings.showMeaning && gameState.currentKanji.keyword) {
-                    ctx.font = '16px sans-serif';
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                    ctx.fillText(
-                        gameState.currentKanji.keyword,
-                        kanjiArea.x + kanjiArea.size / 2,
-                        kanjiArea.y + kanjiArea.size + 25
-                    );
+                    ctx.font = '18px sans-serif';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                    ctx.fillText(gameState.currentKanji.keyword, kanjiArea.x + kanjiArea.size / 2, kanjiArea.y + kanjiArea.size + 30);
                 }
 
-                // Draw target strokes (completed ones faded, current one highlighted)
-                for (let i = 0; i <= gameState.currentStrokeIndex && i < gameState.currentKanji.strokes.length; i++) {
-                    const stroke = gameState.currentKanji.strokes[i];
-                    const isCurrent = i === gameState.currentStrokeIndex;
+                // Completed strokes
+                for (const c of gameState.completedStrokes) {
+                    const stroke = gameState.currentKanji.strokes[c.index];
+                    if (stroke) drawStroke(stroke, kanjiArea, c.result === 'perfect' ? '#00ff88' : c.result === 'good' ? '#ffaa00' : '#ff4444', 0.5, 4);
+                }
 
-                    ctx.beginPath();
-                    for (let j = 0; j < stroke.points.length; j++) {
-                        const x = kanjiArea.x + stroke.points[j][0] * kanjiArea.size;
-                        const y = kanjiArea.y + stroke.points[j][1] * kanjiArea.size;
-                        if (j === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
+                // Flying strokes
+                for (const fs of gameState.flyingStrokes) {
+                    if (fs.kanjiIndex !== gameState.currentKanjiIndex) continue;
+                    const timeUntilArrival = fs.arrivalTime - currentTime;
+                    const progress = Math.max(0, timeUntilArrival / FLIGHT_DURATION);
+                    const depth = progress * SPAWN_DEPTH;
+                    const fillPercent = 1 - progress;
+                    const alpha = Math.min(1, (1 - progress) * 1.5);
+                    const color = fs.isRainbow && gameState.lives < gameState.maxLives ? '#ff00ff' : '#00d4ff';
+                    drawStrokeWithPerspective(fs.stroke, kanjiArea, centerX, centerY, depth, color, alpha * 0.2, 3, 1.0);
+                    drawStrokeWithPerspective(fs.stroke, kanjiArea, centerX, centerY, depth, color, alpha * 0.9, 5, fillPercent);
+                }
 
-                    if (isCurrent) {
-                        // Check if rainbow
-                        const event = gameState.beatEvents[gameState.currentBeatEventIndex];
-                        const isRainbow = event && event.isRainbow && gameState.lives < gameState.maxLives;
-
-                        if (isRainbow) {
-                            // Rainbow gradient
-                            const gradient = ctx.createLinearGradient(
-                                kanjiArea.x, kanjiArea.y,
-                                kanjiArea.x + kanjiArea.size, kanjiArea.y + kanjiArea.size
-                            );
-                            gradient.addColorStop(0, '#ff0000');
-                            gradient.addColorStop(0.2, '#ff8800');
-                            gradient.addColorStop(0.4, '#ffff00');
-                            gradient.addColorStop(0.6, '#00ff00');
-                            gradient.addColorStop(0.8, '#0088ff');
-                            gradient.addColorStop(1, '#ff00ff');
-                            ctx.strokeStyle = gradient;
-                        } else {
-                            ctx.strokeStyle = '#00d4ff';
-                        }
-                        ctx.lineWidth = 6;
-                        ctx.shadowColor = ctx.strokeStyle;
-                        ctx.shadowBlur = 15;
-                    } else {
-                        ctx.strokeStyle = 'rgba(0, 212, 255, 0.3)';
-                        ctx.lineWidth = 4;
-                        ctx.shadowBlur = 0;
-                    }
-
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
+                // Current stroke
+                const currentStroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
+                if (currentStroke && !gameState.flyingStrokes.some(fs => fs.kanjiIndex === gameState.currentKanjiIndex && fs.strokeIndex === gameState.currentStrokeIndex)) {
+                    const windowState = isStrokeWindowActive();
+                    const event = gameState.beatEvents[gameState.currentBeatEventIndex];
+                    const isRainbow = event?.isRainbow && gameState.lives < gameState.maxLives;
+                    drawStroke(currentStroke, kanjiArea, isRainbow ? '#ff00ff' : '#00d4ff', windowState.isActive ? 1.0 : 0.6, 6, windowState.isActive ? 15 : 0);
                 }
             }
 
-            // Draw user's current stroke
+            // User stroke
             if (gameState.isDrawing && gameState.drawnPoints.length > 1) {
-                ctx.beginPath();
+                ctx.save();
                 ctx.strokeStyle = '#ff00ff';
                 ctx.lineWidth = 5;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.shadowColor = '#ff00ff';
-                ctx.shadowBlur = 10;
-
-                for (let i = 0; i < gameState.drawnPoints.length; i++) {
-                    const x = gameState.drawnPoints[i].x * canvas.width;
-                    const y = gameState.drawnPoints[i].y * canvas.height;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
+                ctx.shadowBlur = 15;
+                ctx.globalAlpha = 0.9;
+                ctx.beginPath();
+                gameState.drawnPoints.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
                 ctx.stroke();
-                ctx.shadowBlur = 0;
+                ctx.restore();
             }
-
-            // Draw timing indicator
-            if (gameState.currentKanji) {
-                const event = gameState.beatEvents[gameState.currentBeatEventIndex];
-                if (event) {
-                    const arrivalTime = event.beatTime;
-                    const timeToArrival = arrivalTime - currentTime;
-
-                    if (timeToArrival > 0 && timeToArrival < FLIGHT_DURATION) {
-                        const progress = 1 - (timeToArrival / FLIGHT_DURATION);
-                        const indicatorY = kanjiArea.y - 80 + progress * 60;
-
-                        ctx.beginPath();
-                        ctx.arc(kanjiArea.x + kanjiArea.size / 2, indicatorY, 8, 0, Math.PI * 2);
-                        ctx.fillStyle = '#00d4ff';
-                        ctx.shadowColor = '#00d4ff';
-                        ctx.shadowBlur = 15;
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                    }
-                }
-            }
-
-            // Draw conveyor belt timing lines
-            drawConveyorBelt(currentTime, kanjiArea);
         }
 
-        function drawConveyorBelt(currentTime, kanjiArea) {
-            const bpm = selectedBeatmap.meta.bpm;
-            const beatInterval = 60 / bpm;
-            const conveyorY = kanjiArea.y - 30;
-            const conveyorWidth = kanjiArea.size;
-            const conveyorX = kanjiArea.x;
-
-            // Draw base line
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 2;
+        function drawStroke(stroke, kanjiArea, color, alpha, lineWidth, glow = 0) {
+            const points = stroke.points;
+            if (points.length < 2) return;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            if (glow > 0) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
             ctx.beginPath();
-            ctx.moveTo(conveyorX, conveyorY);
-            ctx.lineTo(conveyorX + conveyorWidth, conveyorY);
+            points.forEach((p, i) => {
+                const x = kanjiArea.x + p[0] * kanjiArea.size;
+                const y = kanjiArea.y + (1 - p[1]) * kanjiArea.size;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
             ctx.stroke();
+            ctx.restore();
+        }
 
-            // Draw beat markers
-            for (let i = 0; i < 8; i++) {
-                const beatTime = Math.floor(currentTime / beatInterval) * beatInterval + i * beatInterval;
-                const offset = (beatTime - currentTime) / (beatInterval * 4);
-
-                if (offset >= 0 && offset < 1) {
-                    const x = conveyorX + conveyorWidth / 2 + offset * conveyorWidth / 2;
-                    const alpha = 1 - offset;
-
-                    ctx.strokeStyle = `rgba(0, 212, 255, ${alpha * 0.5})`;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(x, conveyorY - 10);
-                    ctx.lineTo(x, conveyorY + 10);
-                    ctx.stroke();
-                }
+        function drawStrokeWithPerspective(stroke, kanjiArea, centerX, centerY, depth, color, alpha, lineWidth, fillPercent) {
+            const points = stroke.points;
+            if (points.length < 2) return;
+            const scale = 1 / (1 + depth * PERSPECTIVE_FACTOR);
+            const pointsToDraw = Math.max(2, Math.ceil(points.length * fillPercent));
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.lineWidth = lineWidth * scale;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 10 * scale;
+            ctx.beginPath();
+            for (let i = 0; i < pointsToDraw; i++) {
+                const localX = kanjiArea.x + points[i][0] * kanjiArea.size;
+                const localY = kanjiArea.y + (1 - points[i][1]) * kanjiArea.size;
+                const px = centerX + (localX - centerX) * scale;
+                const py = centerY + (localY - centerY) * scale;
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
             }
+            ctx.stroke();
+            ctx.restore();
         }
 
         function getKanjiArea() {
-            const size = Math.min(canvas.width, canvas.height) * 0.4;
-            const x = (canvas.width - size) / 2;
-            const y = canvas.height - size - canvas.height * 0.1;
-            return { x, y, size };
+            const size = Math.min(canvas.width * 0.6, canvas.height * 0.4, 350);
+            return { x: (canvas.width - size) / 2, y: canvas.height - size - canvas.height * 0.08, size };
         }
 
-        // ===== GAME CONTROLS =====
-        function togglePause() {
-            gameState.isPaused = !gameState.isPaused;
-            document.getElementById('pause-overlay').classList.toggle('active', gameState.isPaused);
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+        }
 
-            if (gameState.isPaused) {
-                audioContext.suspend();
-            } else {
-                audioContext.resume();
-            }
+        // ===== CONTROLS =====
+        function togglePause() {
+            if (gameState.isPaused) resumeGame();
+            else { gameState.isPaused = true; gameState.pauseTime = audioContext.currentTime; document.getElementById('pause-overlay').classList.add('active'); audioContext.suspend(); }
         }
 
         function resumeGame() {
+            gameState.totalPausedTime += audioContext.currentTime - gameState.pauseTime;
             gameState.isPaused = false;
             document.getElementById('pause-overlay').classList.remove('active');
             audioContext.resume();
@@ -1491,61 +1208,32 @@
             gameState.isPaused = false;
             document.getElementById('pause-overlay').classList.remove('active');
             stopSong();
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
+            if (animationId) cancelAnimationFrame(animationId);
             showScreen('menu-screen');
         }
 
         function endGame(completed) {
             gameState.isPlaying = false;
             stopSong();
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
+            if (animationId) cancelAnimationFrame(animationId);
 
-            // Calculate stats
             const maxScore = gameState.beatEvents.length * 100;
             const percentage = maxScore > 0 ? Math.round((gameState.score / maxScore) * 100) : 0;
-
-            // Determine tier
-            let tier = 'D';
-            if (percentage >= 95) tier = 'S';
-            else if (percentage >= 85) tier = 'A';
-            else if (percentage >= 70) tier = 'B';
-            else if (percentage >= 50) tier = 'C';
-
-            // Tier colors
-            const tierColors = {
-                S: '#ffd700',
-                A: '#00ff88',
-                B: '#00d4ff',
-                C: '#ffaa00',
-                D: '#ff4444'
-            };
+            let tier = percentage >= 95 ? 'S' : percentage >= 85 ? 'A' : percentage >= 70 ? 'B' : percentage >= 50 ? 'C' : 'D';
+            const tierColors = { S: '#ffd700', A: '#00ff88', B: '#00d4ff', C: '#ffaa00', D: '#ff4444' };
 
             document.getElementById('game-over-title').textContent = completed ? 'Song Complete!' : 'Game Over';
             document.getElementById('tier-display').textContent = tier;
             document.getElementById('tier-display').style.color = tierColors[tier];
             document.getElementById('final-score').textContent = gameState.score;
             document.getElementById('score-breakdown').textContent = `${percentage}% accuracy`;
-
             showScreen('game-over-screen');
         }
 
-        function retryGame() {
-            startGame(gameState.difficulty);
-        }
+        function retryGame() { startGame(gameState.difficulty); }
 
-        // ===== START =====
         window.addEventListener('load', init);
-
-        // Handle visibility change (pause when tab hidden)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && gameState.isPlaying && !gameState.isPaused) {
-                togglePause();
-            }
-        });
+        document.addEventListener('visibilitychange', () => { if (document.hidden && gameState.isPlaying && !gameState.isPaused) togglePause(); });
     </script>
 </body>
 </html>
