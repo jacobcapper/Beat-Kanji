@@ -488,14 +488,15 @@
 
     <script>
         // ===== GAME CONSTANTS =====
-        const WINDOW_BEFORE_ARRIVAL = 0.75;
-        const WINDOW_AFTER_ARRIVAL = 0.5;
+        const WINDOW_BEFORE_ARRIVAL = 1.0;  // Time before beat when drawing can start
+        const WINDOW_AFTER_ARRIVAL = 1.5;   // Time after beat to complete the stroke
         const FLIGHT_DURATION = 2.0;
         const INTRO_SKIP_TIME = 3.0;
         const GAP_BETWEEN_KANJI_MS = 1500;
         const SPAWN_DEPTH = 10.0;
         const PERSPECTIVE_FACTOR = 0.5;
         const CONVEYOR_HORIZON_Y = 0.35;
+        const KANJI_SCALE = 0.75;  // Scale factor for strokes to match font rendering
 
         // ===== GAME STATE =====
         let kanjiData = [];
@@ -886,7 +887,14 @@
 
             const targetStroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
             const kanjiArea = getKanjiArea();
-            const normalizedDrawn = gameState.drawnPoints.map(p => ({ x: (p.x - kanjiArea.x) / kanjiArea.size, y: (p.y - kanjiArea.y) / kanjiArea.size }));
+
+            // Calculate the scaled stroke area (matching where strokes are drawn)
+            const scaledSize = kanjiArea.size * KANJI_SCALE;
+            const offset = (kanjiArea.size - scaledSize) / 2;
+            const strokeAreaX = kanjiArea.x + offset;
+            const strokeAreaY = kanjiArea.y + offset;
+
+            const normalizedDrawn = gameState.drawnPoints.map(p => ({ x: (p.x - strokeAreaX) / scaledSize, y: (p.y - strokeAreaY) / scaledSize }));
             const result = evaluateStroke(normalizedDrawn, targetStroke);
             const event = gameState.beatEvents[gameState.currentBeatEventIndex];
 
@@ -1093,8 +1101,8 @@
             ctx.stroke();
 
             if (gameState.currentKanji) {
-                // Kanji char
-                ctx.font = `${kanjiArea.size * 0.7}px 'Noto Sans JP'`;
+                // Kanji char - draw at same scale as strokes
+                ctx.font = `${kanjiArea.size * KANJI_SCALE}px 'Noto Sans JP'`;
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -1155,6 +1163,13 @@
         function drawStroke(stroke, kanjiArea, color, alpha, lineWidth, glow = 0) {
             const points = stroke.points;
             if (points.length < 2) return;
+
+            // Calculate scaled and centered stroke area to match font rendering
+            const scaledSize = kanjiArea.size * KANJI_SCALE;
+            const offset = (kanjiArea.size - scaledSize) / 2;
+            const strokeAreaX = kanjiArea.x + offset;
+            const strokeAreaY = kanjiArea.y + offset;
+
             ctx.save();
             ctx.strokeStyle = color;
             ctx.globalAlpha = alpha;
@@ -1164,8 +1179,8 @@
             if (glow > 0) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
             ctx.beginPath();
             points.forEach((p, i) => {
-                const x = kanjiArea.x + p[0] * kanjiArea.size;
-                const y = kanjiArea.y + (1 - p[1]) * kanjiArea.size;
+                const x = strokeAreaX + p[0] * scaledSize;
+                const y = strokeAreaY + (1 - p[1]) * scaledSize;
                 i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
             });
             ctx.stroke();
@@ -1192,8 +1207,8 @@
             const currentCenterX = centerX + (kanjiCenterX - centerX) * flyProgress;
             const currentCenterY = horizonY + (kanjiCenterY - horizonY) * flyProgress;
 
-            // Current size of the kanji area at this depth
-            const currentSize = kanjiArea.size * scale;
+            // Current size of the stroke area at this depth (scaled to match font)
+            const currentSize = kanjiArea.size * KANJI_SCALE * scale;
 
             const pointsToDraw = Math.max(2, Math.ceil(points.length * fillPercent));
             ctx.save();
