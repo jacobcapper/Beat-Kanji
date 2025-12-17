@@ -566,8 +566,10 @@
         }
 
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            // Use the canvas's actual displayed size (accounts for mobile browser UI)
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
         }
 
         async function loadGameData() {
@@ -830,14 +832,23 @@
             canvas.addEventListener('touchend', e => { e.preventDefault(); handlePointerEnd(); });
         }
 
-        function handlePointerStart(e) {
-            if (!gameState.isPlaying || gameState.isPaused) return;
+        function getCanvasCoordinates(e) {
             const rect = canvas.getBoundingClientRect();
-            // Scale touch coordinates to match canvas pixel dimensions
+
+            // Calculate position relative to canvas element
+            const rawX = e.clientX - rect.left;
+            const rawY = e.clientY - rect.top;
+
+            // Scale to actual canvas pixel dimensions
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
+
+            return { x: rawX * scaleX, y: rawY * scaleY };
+        }
+
+        function handlePointerStart(e) {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+            const { x, y } = getCanvasCoordinates(e);
 
             const windowState = isStrokeWindowActive();
             if (!windowState.isActive) {
@@ -858,12 +869,7 @@
 
         function handlePointerMove(e) {
             if (!gameState.isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            // Scale touch coordinates to match canvas pixel dimensions
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
+            const { x, y } = getCanvasCoordinates(e);
             gameState.drawnPoints.push({ x, y });
         }
 
