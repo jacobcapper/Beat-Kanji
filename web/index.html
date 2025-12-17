@@ -1041,17 +1041,42 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Conveyor
+            // Perspective rails - converging lines from bottom corners to horizon
             const horizonY = canvas.height * CONVEYOR_HORIZON_Y;
+            const kanjiArea = getKanjiArea();
+            const floorY = kanjiArea.y + kanjiArea.size;
+
+            // Draw converging perspective rails
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            // Left rail
+            ctx.moveTo(0, floorY);
+            ctx.lineTo(centerX, horizonY);
+            // Right rail
+            ctx.moveTo(canvas.width, floorY);
+            ctx.lineTo(centerX, horizonY);
+            ctx.stroke();
+
+            // Horizon glow
+            const horizonGrad = ctx.createLinearGradient(0, horizonY - 20, 0, horizonY + 20);
+            horizonGrad.addColorStop(0, 'rgba(0, 212, 255, 0)');
+            horizonGrad.addColorStop(0.5, 'rgba(0, 212, 255, 0.1)');
+            horizonGrad.addColorStop(1, 'rgba(0, 212, 255, 0)');
+            ctx.fillStyle = horizonGrad;
+            ctx.fillRect(0, horizonY - 20, canvas.width, 40);
+
+            // Conveyor belt - lines fly from horizon toward bottom of screen
             for (const line of gameState.conveyorLines) {
                 const progress = (currentTime - line.spawnTime) / FLIGHT_DURATION;
                 if (progress < 0 || progress > 1) continue;
                 const depth = SPAWN_DEPTH * (1 - progress);
                 const scale = 1 / (1 + depth * PERSPECTIVE_FACTOR);
-                const y = centerY + (horizonY - centerY) * (1 - scale);
+                // Interpolate Y from horizon to floor as progress increases
+                const y = horizonY + (floorY - horizonY) * progress;
                 const halfWidth = canvas.width * 0.5 * scale;
-                ctx.strokeStyle = `rgba(0, 212, 255, ${0.1 + 0.4 * scale})`;
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = `rgba(0, 212, 255, ${0.1 + 0.5 * scale})`;
+                ctx.lineWidth = 2 * scale;
                 ctx.beginPath();
                 ctx.moveTo(centerX - halfWidth, y);
                 ctx.lineTo(centerX + halfWidth, y);
@@ -1059,7 +1084,6 @@
             }
 
             // Kanji area
-            const kanjiArea = getKanjiArea();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
             ctx.lineWidth = 3;
@@ -1151,7 +1175,26 @@
         function drawStrokeWithPerspective(stroke, kanjiArea, centerX, centerY, depth, color, alpha, lineWidth, fillPercent) {
             const points = stroke.points;
             if (points.length < 2) return;
+
+            // Calculate scale based on depth (distant = small, close = full size)
             const scale = 1 / (1 + depth * PERSPECTIVE_FACTOR);
+
+            // Calculate the horizon position where strokes spawn (center of screen, slightly above)
+            const horizonY = canvas.height * CONVEYOR_HORIZON_Y;
+
+            // Progress from horizon to kanji box (0 = at horizon, 1 = at kanji box)
+            const flyProgress = 1 - (depth / SPAWN_DEPTH);
+
+            // Calculate the current center position of the stroke
+            // Start at screen center (horizon), end at kanji box center
+            const kanjiCenterX = kanjiArea.x + kanjiArea.size / 2;
+            const kanjiCenterY = kanjiArea.y + kanjiArea.size / 2;
+            const currentCenterX = centerX + (kanjiCenterX - centerX) * flyProgress;
+            const currentCenterY = horizonY + (kanjiCenterY - horizonY) * flyProgress;
+
+            // Current size of the kanji area at this depth
+            const currentSize = kanjiArea.size * scale;
+
             const pointsToDraw = Math.max(2, Math.ceil(points.length * fillPercent));
             ctx.save();
             ctx.strokeStyle = color;
@@ -1163,10 +1206,11 @@
             ctx.shadowBlur = 10 * scale;
             ctx.beginPath();
             for (let i = 0; i < pointsToDraw; i++) {
-                const localX = kanjiArea.x + points[i][0] * kanjiArea.size;
-                const localY = kanjiArea.y + (1 - points[i][1]) * kanjiArea.size;
-                const px = centerX + (localX - centerX) * scale;
-                const py = centerY + (localY - centerY) * scale;
+                // Calculate position relative to current flying center
+                const normalizedX = points[i][0] - 0.5; // -0.5 to 0.5
+                const normalizedY = (1 - points[i][1]) - 0.5; // -0.5 to 0.5
+                const px = currentCenterX + normalizedX * currentSize;
+                const py = currentCenterY + normalizedY * currentSize;
                 i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
             }
             ctx.stroke();
