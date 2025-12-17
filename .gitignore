@@ -13,3 +13,4 @@ scripts/.venv
 
 res/kanji-extracted.json
 res/kanji-tagged.json
+__pycache__/
