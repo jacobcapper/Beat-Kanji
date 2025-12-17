@@ -496,7 +496,8 @@
         const SPAWN_DEPTH = 10.0;
         const PERSPECTIVE_FACTOR = 0.5;
         const CONVEYOR_HORIZON_Y = 0.35;
-        const KANJI_SCALE = 0.82;  // Scale factor for strokes to match font rendering
+        const KANJI_SCALE = 0.78;  // Scale factor for strokes
+        const FONT_SCALE = 0.88;   // Scale factor for reference kanji font
 
         // ===== GAME STATE =====
         let kanjiData = [];
@@ -1101,8 +1102,8 @@
             ctx.stroke();
 
             if (gameState.currentKanji) {
-                // Kanji char - draw at same scale as strokes
-                ctx.font = `${kanjiArea.size * KANJI_SCALE}px 'Noto Sans JP'`;
+                // Kanji char - reference character (larger than strokes due to font metrics)
+                ctx.font = `${kanjiArea.size * FONT_SCALE}px 'Noto Sans JP'`;
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
