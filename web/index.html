@@ -496,8 +496,8 @@
         const SPAWN_DEPTH = 10.0;
         const PERSPECTIVE_FACTOR = 0.5;
         const CONVEYOR_HORIZON_Y = 0.35;
-        const KANJI_SCALE = 0.78;  // Scale factor for strokes
-        const FONT_SCALE = 0.88;   // Scale factor for reference kanji font
+        const KANJI_SCALE = 1.2;   // Scale factor for strokes
+        const FONT_SCALE = 1.0;    // Scale factor for reference kanji font
 
         // ===== GAME STATE =====
         let kanjiData = [];
@@ -568,8 +568,11 @@
         function resizeCanvas() {
             // Use the canvas's actual displayed size (accounts for mobile browser UI)
             const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
+            // Fall back to window dimensions if rect is 0 (element not visible yet)
+            const width = rect.width > 0 ? rect.width : window.innerWidth;
+            const height = rect.height > 0 ? rect.height : window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
         }
 
         async function loadGameData() {
