@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Beat Kanji</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        #app {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Loading Screen */
+        #loading-screen .loading-text {
+            font-size: 2rem;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff;
+        }
+
+        .loading-bar {
+            width: 80%;
+            max-width: 400px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Menu Screen */
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff00ff;
+            text-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            margin-bottom: 40px;
+        }
+
+        .menu-btn {
+            background: linear-gradient(135deg, rgba(255,0,255,0.3), rgba(0,212,255,0.3));
+            border: 2px solid #00d4ff;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .menu-btn:hover, .menu-btn:active {
+            background: linear-gradient(135deg, rgba(255,0,255,0.5), rgba(0,212,255,0.5));
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,212,255,0.5);
+        }
+
+        /* Song Select */
+        .song-list {
+            width: 90%;
+            max-width: 500px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .category-header {
+            font-size: 1rem;
+            color: #ff00ff;
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .song-item {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,212,255,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .song-item:hover, .song-item:active {
+            background: rgba(0,212,255,0.2);
+            border-color: #00d4ff;
+        }
+
+        .song-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .song-info {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Difficulty Select */
+        .difficulty-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .difficulty-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid;
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            color: white;
+        }
+
+        .difficulty-btn.easy {
+            border-color: #00ff88;
+        }
+
+        .difficulty-btn.medium {
+            border-color: #ffaa00;
+        }
+
+        .difficulty-btn.hard {
+            border-color: #ff4444;
+        }
+
+        .difficulty-btn:hover, .difficulty-btn:active {
+            transform: scale(1.05);
+        }
+
+        .difficulty-btn.easy:hover { background: rgba(0,255,136,0.2); }
+        .difficulty-btn.medium:hover { background: rgba(255,170,0,0.2); }
+        .difficulty-btn.hard:hover { background: rgba(255,68,68,0.2); }
+
+        /* Game Screen */
+        #game-screen {
+            position: relative;
+        }
+
+        #game-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .lives-display {
+            display: flex;
+            gap: 8px;
+        }
+
+        .heart {
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .heart.alive {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+        }
+
+        .heart.dead {
+            color: #444;
+        }
+
+        .pause-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .pause-overlay.active {
+            display: flex;
+        }
+
+        .pause-title {
+            font-size: 2rem;
+            color: #ff00ff;
+            margin-bottom: 30px;
+        }
+
+        /* Game Over */
+        .game-over-title {
+            font-size: 2.5rem;
+            color: #ff00ff;
+            text-shadow: 0 0 30px #ff00ff;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .score-breakdown {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .tier-display {
+            font-size: 4rem;
+            margin-bottom: 30px;
+        }
+
+        /* Back button */
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            z-index: 10;
+        }
+
+        .screen-title {
+            font-size: 1.8rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        /* Kanji display area */
+        .kanji-area {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .kanji-area {
+                width: 350px;
+                height: 350px;
+            }
+        }
+
+        /* Progress bar at bottom */
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            transition: width 0.1s linear;
+        }
+
+        /* Feedback text */
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .feedback.perfect {
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+        }
+
+        .feedback.good {
+            color: #ffaa00;
+            text-shadow: 0 0 20px #ffaa00;
+        }
+
+        .feedback.miss {
+            color: #ff4444;
+            text-shadow: 0 0 20px #ff4444;
+        }
+
+        .feedback.show {
+            opacity: 1;
+            animation: feedbackPop 0.5s ease-out forwards;
+        }
+
+        @keyframes feedbackPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
+        }
+
+        /* Conveyor lines */
+        .conveyor-container {
+            position: absolute;
+            bottom: calc(10% + 250px + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 60px;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .conveyor-container {
+                bottom: calc(10% + 350px + 20px);
+                width: 350px;
+            }
+        }
+
+        /* Settings */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-label {
+            font-size: 1.1rem;
+        }
+
+        .volume-slider {
+            width: 150px;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .checkbox-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-item {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item.active {
+            background: rgba(0,212,255,0.3);
+            border-color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active">
+            <div class="loading-text">Loading...</div>
+            <div class="loading-bar">
+                <div class="loading-bar-fill" id="loading-progress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Menu Screen -->
+        <div id="menu-screen" class="screen">
+            <div class="logo">Beat Kanji</div>
+            <div class="subtitle">Learn Kanji with Rhythm</div>
+            <button class="menu-btn" onclick="showScreen('song-select-screen')">Play</button>
+            <button class="menu-btn" onclick="showScreen('settings-screen')">Settings</button>
+        </div>
+
+        <!-- Song Select Screen -->
+        <div id="song-select-screen" class="screen">
+            <button class="back-btn" onclick="showScreen('menu-screen')">← Back</button>
+            <div class="screen-title">Select Song</div>
+            <div class="song-list" id="song-list"></div>
+        </div>
+
+        <!-- Difficulty Select Screen -->
+        <div id="difficulty-screen" class="screen">
+            <button class="back-btn" onclick="showScreen('song-select-screen')">← Back</button>
+            <div class="screen-title" id="selected-song-title">Song Title</div>
+            <div class="difficulty-container">
+                <button class="difficulty-btn easy" onclick="startGame('easy')">Easy</button>
+                <button class="difficulty-btn medium" onclick="startGame('medium')">Medium</button>
+                <button class="difficulty-btn hard" onclick="startGame('hard')">Hard</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen">
+            <button class="back-btn" onclick="showScreen('menu-screen')">← Back</button>
+            <div class="screen-title">Settings</div>
+            <div class="settings-container">
+                <div class="setting-row">
+                    <span class="setting-label">Music Volume</span>
+                    <input type="range" class="volume-slider" id="music-volume" min="0" max="100" value="70" onchange="updateVolume()">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Show Meaning</span>
+                    <button class="checkbox-item" id="show-meaning-toggle" onclick="toggleMeaning()">OFF</button>
+                </div>
+                <div>
+                    <div class="setting-label" style="margin-bottom: 10px;">Kanji Categories</div>
+                    <div class="checkbox-container" id="category-checkboxes"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <canvas id="game-canvas"></canvas>
+            <div class="game-hud">
+                <div class="score-display" id="score-display">0</div>
+                <div class="lives-display" id="lives-display"></div>
+            </div>
+            <button class="pause-btn" onclick="togglePause()">⏸</button>
+            <div class="feedback" id="feedback"></div>
+            <div class="conveyor-container" id="conveyor"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <!-- Pause Overlay -->
+            <div class="pause-overlay" id="pause-overlay">
+                <div class="pause-title">Paused</div>
+                <button class="menu-btn" onclick="resumeGame()">Resume</button>
+                <button class="menu-btn" onclick="quitToMenu()">Quit</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen">
+            <div class="game-over-title" id="game-over-title">Song Complete!</div>
+            <div class="tier-display" id="tier-display">S</div>
+            <div class="final-score" id="final-score">10000</div>
+            <div class="score-breakdown" id="score-breakdown">100% accuracy</div>
+            <button class="menu-btn" onclick="retryGame()">Play Again</button>
+            <button class="menu-btn" onclick="showScreen('song-select-screen')">Song Select</button>
+            <button class="menu-btn" onclick="showScreen('menu-screen')">Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== GAME STATE =====
+        let kanjiData = [];
+        let beatmaps = {};
+        let categories = [];
+        let selectedSong = null;
+        let selectedBeatmap = null;
+
+        // Settings
+        let settings = {
+            musicVolume: 0.7,
+            showMeaning: false,
+            enabledCategories: new Set(['n5', 'n4', 'n3', 'hiragana', 'katakana'])
+        };
+
+        // Game state
+        let gameState = {
+            score: 0,
+            lives: 4,
+            maxLives: 4,
+            currentKanji: null,
+            currentKanjiIndex: 0,
+            currentStrokeIndex: 0,
+            kanjiSequence: [],
+            beatEvents: [],
+            currentBeatEventIndex: 0,
+            isPaused: false,
+            isPlaying: false,
+            startTime: 0,
+            difficulty: 'easy',
+            drawnPoints: [],
+            isDrawing: false
+        };
+
+        // Audio
+        let audioContext = null;
+        let audioBuffer = null;
+        let audioSource = null;
+        let gainNode = null;
+        let menuAudio = null;
+
+        // Canvas
+        let canvas, ctx;
+        let animationId = null;
+
+        // Timing constants
+        const WINDOW_BEFORE_ARRIVAL = 0.75;
+        const WINDOW_AFTER_ARRIVAL = 0.5;
+        const FLIGHT_DURATION = 2.0;
+        const INTRO_SKIP_TIME = 3.0;
+        const GAP_BETWEEN_KANJI_MS = 1500;
+
+        // ===== INITIALIZATION =====
+        async function init() {
+            canvas = document.getElementById('game-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Load settings from localStorage
+            loadSettings();
+
+            // Setup audio context
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
+            gainNode.gain.value = settings.musicVolume;
+
+            // Load data
+            await loadGameData();
+
+            // Setup input handlers
+            setupInputHandlers();
+
+            // Show menu
+            showScreen('menu-screen');
+
+            // Start menu music
+            playMenuMusic();
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        async function loadGameData() {
+            const progressBar = document.getElementById('loading-progress');
+
+            // Load kanji data
+            progressBar.style.width = '20%';
+            const kanjiResponse = await fetch('kanji-data.json');
+            kanjiData = await kanjiResponse.json();
+
+            // Load categories
+            progressBar.style.width = '40%';
+            const catResponse = await fetch('data/categories.json');
+            categories = await catResponse.json();
+
+            // Load beatmaps
+            const beatmapFiles = [
+                'adagio-for-strings', 'canon-in-d', 'clair-de-lune',
+                'digital-heartbeat', 'hungarian-rhapsody-no-2', 'moonlight-sonate',
+                'odoriakasou', 'sanninnokohi', 'the-blue-danube', 'wakamarunohune'
+            ];
+
+            for (let i = 0; i < beatmapFiles.length; i++) {
+                const file = beatmapFiles[i];
+                try {
+                    const response = await fetch(`data/${file}.json`);
+                    beatmaps[file] = await response.json();
+                } catch (e) {
+                    console.error(`Failed to load ${file}:`, e);
+                }
+                progressBar.style.width = `${40 + (i + 1) / beatmapFiles.length * 50}%`;
+            }
+
+            progressBar.style.width = '100%';
+            populateSongList();
+            setupSettingsUI();
+        }
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem('beatkanji-settings');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    settings.musicVolume = parsed.musicVolume ?? 0.7;
+                    settings.showMeaning = parsed.showMeaning ?? false;
+                    if (parsed.enabledCategories) {
+                        settings.enabledCategories = new Set(parsed.enabledCategories);
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem('beatkanji-settings', JSON.stringify({
+                    musicVolume: settings.musicVolume,
+                    showMeaning: settings.showMeaning,
+                    enabledCategories: Array.from(settings.enabledCategories)
+                }));
+            } catch (e) {
+                console.error('Failed to save settings:', e);
+            }
+        }
+
+        // ===== UI FUNCTIONS =====
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'menu-screen') {
+                playMenuMusic();
+            }
+        }
+
+        function populateSongList() {
+            const songList = document.getElementById('song-list');
+            songList.innerHTML = '';
+
+            // Group songs by category
+            const songsByCategory = {};
+            for (const [name, beatmap] of Object.entries(beatmaps)) {
+                const category = beatmap.meta.category || 'Uncategorized';
+                if (!songsByCategory[category]) {
+                    songsByCategory[category] = [];
+                }
+                songsByCategory[category].push({ name, beatmap });
+            }
+
+            // Sort by categories order
+            const orderedCategories = categories.map(c => c.name);
+            const allCategories = [...new Set([...orderedCategories, ...Object.keys(songsByCategory)])];
+
+            for (const category of allCategories) {
+                const songs = songsByCategory[category];
+                if (!songs || songs.length === 0) continue;
+
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.textContent = category;
+                songList.appendChild(header);
+
+                for (const { name, beatmap } of songs) {
+                    const item = document.createElement('div');
+                    item.className = 'song-item';
+                    item.innerHTML = `
+                        <div class="song-title">${beatmap.meta.title || name}</div>
+                        <div class="song-info">${beatmap.meta.bpm} BPM · ${Math.floor(beatmap.meta.total_duration / 60)}:${String(Math.floor(beatmap.meta.total_duration % 60)).padStart(2, '0')}</div>
+                    `;
+                    item.onclick = () => selectSong(name, beatmap);
+                    songList.appendChild(item);
+                }
+            }
+        }
+
+        function selectSong(name, beatmap) {
+            selectedSong = name;
+            selectedBeatmap = beatmap;
+            document.getElementById('selected-song-title').textContent = beatmap.meta.title || name;
+            showScreen('difficulty-screen');
+        }
+
+        function setupSettingsUI() {
+            document.getElementById('music-volume').value = settings.musicVolume * 100;
+            document.getElementById('show-meaning-toggle').textContent = settings.showMeaning ? 'ON' : 'OFF';
+            document.getElementById('show-meaning-toggle').classList.toggle('active', settings.showMeaning);
+
+            const container = document.getElementById('category-checkboxes');
+            container.innerHTML = '';
+
+            const allCategories = ['n5', 'n4', 'n3', 'n2', 'n1', 'hiragana', 'katakana'];
+            const labels = { n5: 'N5', n4: 'N4', n3: 'N3', n2: 'N2', n1: 'N1', hiragana: 'Hiragana', katakana: 'Katakana' };
+
+            for (const cat of allCategories) {
+                const item = document.createElement('button');
+                item.className = 'checkbox-item' + (settings.enabledCategories.has(cat) ? ' active' : '');
+                item.textContent = labels[cat];
+                item.onclick = () => {
+                    if (settings.enabledCategories.has(cat)) {
+                        settings.enabledCategories.delete(cat);
+                        item.classList.remove('active');
+                    } else {
+                        settings.enabledCategories.add(cat);
+                        item.classList.add('active');
+                    }
+                    saveSettings();
+                };
+                container.appendChild(item);
+            }
+        }
+
+        function updateVolume() {
+            settings.musicVolume = document.getElementById('music-volume').value / 100;
+            if (gainNode) {
+                gainNode.gain.value = settings.musicVolume;
+            }
+            if (menuAudio) {
+                menuAudio.volume = settings.musicVolume;
+            }
+            saveSettings();
+        }
+
+        function toggleMeaning() {
+            settings.showMeaning = !settings.showMeaning;
+            document.getElementById('show-meaning-toggle').textContent = settings.showMeaning ? 'ON' : 'OFF';
+            document.getElementById('show-meaning-toggle').classList.toggle('active', settings.showMeaning);
+            saveSettings();
+        }
+
+        // ===== AUDIO FUNCTIONS =====
+        function playMenuMusic() {
+            if (menuAudio) {
+                menuAudio.play().catch(() => {});
+                return;
+            }
+
+            menuAudio = new Audio('audio/menu.mp3');
+            menuAudio.loop = true;
+            menuAudio.volume = settings.musicVolume;
+            menuAudio.play().catch(() => {});
+        }
+
+        function stopMenuMusic() {
+            if (menuAudio) {
+                menuAudio.pause();
+                menuAudio.currentTime = 0;
+            }
+        }
+
+        async function loadSongAudio(filename) {
+            const response = await fetch(`audio/${filename}`);
+            const arrayBuffer = await response.arrayBuffer();
+            audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        }
+
+        function playSong() {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            audioSource = audioContext.createBufferSource();
+            audioSource.buffer = audioBuffer;
+            audioSource.connect(gainNode);
+            audioSource.start(0);
+            gameState.startTime = audioContext.currentTime;
+
+            audioSource.onended = () => {
+                if (gameState.isPlaying && !gameState.isPaused) {
+                    endGame(true);
+                }
+            };
+        }
+
+        function stopSong() {
+            if (audioSource) {
+                try {
+                    audioSource.stop();
+                } catch (e) {}
+                audioSource = null;
+            }
+        }
+
+        function getCurrentTime() {
+            if (!gameState.isPlaying || gameState.isPaused) return 0;
+            return audioContext.currentTime - gameState.startTime;
+        }
+
+        // ===== GAME FUNCTIONS =====
+        async function startGame(difficulty) {
+            stopMenuMusic();
+
+            gameState = {
+                score: 0,
+                lives: 4,
+                maxLives: 4,
+                currentKanji: null,
+                currentKanjiIndex: 0,
+                currentStrokeIndex: 0,
+                kanjiSequence: [],
+                beatEvents: [],
+                currentBeatEventIndex: 0,
+                isPaused: false,
+                isPlaying: true,
+                startTime: 0,
+                difficulty: difficulty,
+                drawnPoints: [],
+                isDrawing: false
+            };
+
+            // Filter kanji by enabled categories (handle optimized format)
+            const filteredKanji = kanjiData.filter(k =>
+                k.tags.some(t => settings.enabledCategories.has(t))
+            ).map(k => ({
+                id: k.id,
+                char: k.c,
+                strokeCount: k.sc,
+                keyword: k.kw,
+                tags: k.tags,
+                strokes: k.strokes.map(s => ({
+                    id: s.id,
+                    points: s.points,
+                    lengthClass: s.lc
+                }))
+            }));
+
+            if (filteredKanji.length === 0) {
+                alert('No kanji available for selected categories!');
+                showScreen('settings-screen');
+                return;
+            }
+
+            // Get notes for difficulty
+            const difficultyLevel = { easy: 1, medium: 2, hard: 3 }[difficulty];
+            let notes = selectedBeatmap.notes.filter(n => {
+                if (difficulty === 'easy') return n.level === 1;
+                if (difficulty === 'medium') return n.level <= 2;
+                return n.level <= 3;
+            }).filter(n => n.time >= INTRO_SKIP_TIME);
+
+            // Select kanji with gaps
+            const result = selectKanjiWithGaps(filteredKanji, notes, GAP_BETWEEN_KANJI_MS);
+            gameState.kanjiSequence = result.kanji;
+            gameState.beatEvents = createBeatEvents(result.notes);
+
+            // Load audio
+            showScreen('game-screen');
+            await loadSongAudio(selectedBeatmap.meta.filename);
+
+            // Start game
+            loadNextKanji();
+            updateHUD();
+            playSong();
+            gameLoop();
+        }
+
+        function selectKanjiWithGaps(kanjiList, notes, gapMs) {
+            const gapSeconds = gapMs / 1000;
+            const selectedKanji = [];
+            const usedNotes = [];
+            let availableNotes = [...notes];
+            let shuffledKanji = shuffle([...kanjiList]);
+            let shuffleIndex = 0;
+
+            while (availableNotes.length > 0) {
+                if (shuffleIndex >= shuffledKanji.length) {
+                    shuffledKanji = shuffle([...kanjiList]);
+                    shuffleIndex = 0;
+                }
+
+                const kanji = shuffledKanji[shuffleIndex];
+                const strokeCount = kanji.strokeCount;
+
+                if (strokeCount <= availableNotes.length) {
+                    const kanjiNotes = availableNotes.slice(0, strokeCount);
+                    usedNotes.push(...kanjiNotes);
+                    selectedKanji.push(kanji);
+                    availableNotes = availableNotes.slice(strokeCount);
+
+                    if (kanjiNotes.length > 0 && availableNotes.length > 0) {
+                        const lastNoteTime = kanjiNotes[kanjiNotes.length - 1].time;
+                        const gapEndTime = lastNoteTime + gapSeconds;
+                        availableNotes = availableNotes.filter(n => n.time > gapEndTime);
+                    }
+                } else {
+                    const smallerKanji = shuffledKanji.find(k => k.strokeCount <= availableNotes.length);
+                    if (smallerKanji) {
+                        shuffledKanji = shuffledKanji.filter(k => k.id !== smallerKanji.id);
+                        shuffledKanji.splice(shuffleIndex, 0, smallerKanji);
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+                shuffleIndex++;
+            }
+
+            return { kanji: selectedKanji, notes: usedNotes };
+        }
+
+        function createBeatEvents(notes) {
+            const events = [];
+            let kanjiIdx = 0;
+            let strokeIdx = 0;
+
+            for (const note of notes) {
+                if (kanjiIdx < gameState.kanjiSequence.length) {
+                    const currentStrokeCount = gameState.kanjiSequence[kanjiIdx].strokeCount;
+                    if (strokeIdx >= currentStrokeCount) {
+                        kanjiIdx++;
+                        strokeIdx = 0;
+                    }
+                }
+
+                if (kanjiIdx >= gameState.kanjiSequence.length) break;
+
+                const isRainbow = Math.random() < 0.05;
+                events.push({
+                    beatTime: note.time,
+                    kanjiIndex: kanjiIdx,
+                    strokeIndex: strokeIdx,
+                    isRainbow
+                });
+                strokeIdx++;
+            }
+
+            return events;
+        }
+
+        function loadNextKanji() {
+            if (gameState.currentKanjiIndex >= gameState.kanjiSequence.length) {
+                gameState.currentKanji = null;
+                return;
+            }
+
+            gameState.currentKanji = gameState.kanjiSequence[gameState.currentKanjiIndex];
+            gameState.currentStrokeIndex = 0;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ===== INPUT HANDLING =====
+        function setupInputHandlers() {
+            canvas.addEventListener('mousedown', handlePointerStart);
+            canvas.addEventListener('mousemove', handlePointerMove);
+            canvas.addEventListener('mouseup', handlePointerEnd);
+            canvas.addEventListener('mouseleave', handlePointerEnd);
+
+            canvas.addEventListener('touchstart', e => {
+                e.preventDefault();
+                handlePointerStart(e.touches[0]);
+            });
+            canvas.addEventListener('touchmove', e => {
+                e.preventDefault();
+                handlePointerMove(e.touches[0]);
+            });
+            canvas.addEventListener('touchend', e => {
+                e.preventDefault();
+                handlePointerEnd();
+            });
+        }
+
+        function handlePointerStart(e) {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            gameState.isDrawing = true;
+            gameState.drawnPoints = [{ x, y }];
+        }
+
+        function handlePointerMove(e) {
+            if (!gameState.isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            gameState.drawnPoints.push({ x, y });
+        }
+
+        function handlePointerEnd() {
+            if (!gameState.isDrawing) return;
+            gameState.isDrawing = false;
+
+            if (gameState.drawnPoints.length >= 3) {
+                evaluateCurrentStroke();
+            }
+
+            gameState.drawnPoints = [];
+        }
+
+        function evaluateCurrentStroke() {
+            if (!gameState.currentKanji) return;
+            if (gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) return;
+
+            const currentTime = getCurrentTime();
+            const event = gameState.beatEvents[gameState.currentBeatEventIndex];
+            if (!event) return;
+
+            const arrivalTime = event.beatTime;
+            const windowStart = arrivalTime - WINDOW_BEFORE_ARRIVAL;
+            const windowEnd = arrivalTime + WINDOW_AFTER_ARRIVAL + getExtraTime();
+
+            if (currentTime < windowStart || currentTime > windowEnd) {
+                return; // Outside window
+            }
+
+            const targetStroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
+            const result = evaluateStroke(gameState.drawnPoints, targetStroke);
+
+            // Apply score and show feedback
+            if (result === 'perfect') {
+                gameState.score += 100;
+                showFeedback('PERFECT!', 'perfect');
+                if (event.isRainbow && gameState.lives < gameState.maxLives) {
+                    gameState.lives++;
+                }
+            } else if (result === 'good') {
+                gameState.score += 30;
+                showFeedback('Good', 'good');
+            } else {
+                showFeedback('Miss', 'miss');
+                loseLife();
+            }
+
+            advanceStroke();
+            updateHUD();
+        }
+
+        function evaluateStroke(drawnPoints, targetStroke) {
+            const sampleCount = 50;
+
+            // Convert to kanji coordinate space (0-1)
+            const kanjiArea = getKanjiArea();
+            const normalizedDrawn = drawnPoints.map(p => ({
+                x: (p.x * canvas.width - kanjiArea.x) / kanjiArea.size,
+                y: (p.y * canvas.height - kanjiArea.y) / kanjiArea.size
+            }));
+
+            const resampledDrawn = resamplePoints(normalizedDrawn, sampleCount);
+            const resampledTarget = resamplePoints(
+                targetStroke.points.map(p => ({ x: p[0], y: p[1] })),
+                sampleCount
+            );
+
+            let totalDist = 0;
+            for (let i = 0; i < sampleCount; i++) {
+                const dx = resampledDrawn[i].x - resampledTarget[i].x;
+                const dy = resampledDrawn[i].y - resampledTarget[i].y;
+                totalDist += Math.sqrt(dx * dx + dy * dy);
+            }
+            const avgDist = totalDist / sampleCount;
+
+            if (avgDist < 0.08) return 'perfect';
+            if (avgDist < 0.15) return 'good';
+            return 'miss';
+        }
+
+        function resamplePoints(points, count) {
+            if (points.length < 2) {
+                return Array(count).fill(points[0] || { x: 0, y: 0 });
+            }
+
+            // Calculate total length
+            let totalLength = 0;
+            for (let i = 0; i < points.length - 1; i++) {
+                const dx = points[i + 1].x - points[i].x;
+                const dy = points[i + 1].y - points[i].y;
+                totalLength += Math.sqrt(dx * dx + dy * dy);
+            }
+
+            const interval = totalLength / (count - 1);
+            const result = [points[0]];
+            let currentDist = 0;
+            let nextDist = interval;
+            let i = 0;
+
+            while (result.length < count) {
+                if (i >= points.length - 1) {
+                    result.push(points[points.length - 1]);
+                    continue;
+                }
+
+                const dx = points[i + 1].x - points[i].x;
+                const dy = points[i + 1].y - points[i].y;
+                const segmentLength = Math.sqrt(dx * dx + dy * dy);
+
+                if (currentDist + segmentLength >= nextDist) {
+                    const t = (nextDist - currentDist) / segmentLength;
+                    result.push({
+                        x: points[i].x + dx * t,
+                        y: points[i].y + dy * t
+                    });
+                    nextDist += interval;
+                } else {
+                    currentDist += segmentLength;
+                    i++;
+                }
+            }
+
+            return result;
+        }
+
+        function getExtraTime() {
+            if (!gameState.currentKanji) return 0;
+            const stroke = gameState.currentKanji.strokes[gameState.currentStrokeIndex];
+            if (!stroke) return 0;
+            const extraTimes = { S: 0, M: 0.25, L: 0.5, XL: 0.75 };
+            return extraTimes[stroke.lengthClass] || 0;
+        }
+
+        function advanceStroke() {
+            gameState.currentStrokeIndex++;
+            gameState.currentBeatEventIndex++;
+
+            if (gameState.currentKanji && gameState.currentStrokeIndex >= gameState.currentKanji.strokeCount) {
+                gameState.currentKanjiIndex++;
+                loadNextKanji();
+            }
+        }
+
+        function loseLife() {
+            gameState.lives--;
+            if (gameState.lives <= 0) {
+                endGame(false);
+            }
+        }
+
+        function showFeedback(text, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = text;
+            feedback.className = 'feedback ' + type + ' show';
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 500);
+        }
+
+        function updateHUD() {
+            document.getElementById('score-display').textContent = gameState.score;
+
+            const livesDisplay = document.getElementById('lives-display');
+            livesDisplay.innerHTML = '';
+            for (let i = 0; i < gameState.maxLives; i++) {
+                const heart = document.createElement('span');
+                heart.className = 'heart ' + (i < gameState.lives ? 'alive' : 'dead');
+                heart.textContent = '♥';
+                livesDisplay.appendChild(heart);
+            }
+        }
+
+        // ===== GAME LOOP =====
+        function gameLoop() {
+            if (!gameState.isPlaying) return;
+
+            if (!gameState.isPaused) {
+                update();
+                render();
+            }
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            const currentTime = getCurrentTime();
+
+            // Update progress bar
+            const progress = currentTime / selectedBeatmap.meta.total_duration;
+            document.getElementById('progress-fill').style.width = `${Math.min(100, progress * 100)}%`;
+
+            // Check for stroke timeout
+            if (gameState.currentKanji && !gameState.isDrawing) {
+                const event = gameState.beatEvents[gameState.currentBeatEventIndex];
+                if (event) {
+                    const windowEnd = event.beatTime + WINDOW_AFTER_ARRIVAL + getExtraTime();
+                    if (currentTime > windowEnd) {
+                        showFeedback('Miss', 'miss');
+                        loseLife();
+                        advanceStroke();
+                        updateHUD();
+                    }
+                }
+            }
+
+            // Check if all events are done
+            if (gameState.currentBeatEventIndex >= gameState.beatEvents.length && !gameState.currentKanji) {
+                // Will end when song ends
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const currentTime = getCurrentTime();
+            const kanjiArea = getKanjiArea();
+
+            // Draw kanji area background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(kanjiArea.x, kanjiArea.y, kanjiArea.size, kanjiArea.size, 15);
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw current kanji character (faded)
+            if (gameState.currentKanji) {
+                ctx.font = `${kanjiArea.size * 0.7}px 'Noto Sans JP'`;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(
+                    gameState.currentKanji.char,
+                    kanjiArea.x + kanjiArea.size / 2,
+                    kanjiArea.y + kanjiArea.size / 2
+                );
+
+                // Draw meaning if enabled
+                if (settings.showMeaning && gameState.currentKanji.keyword) {
+                    ctx.font = '16px sans-serif';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.fillText(
+                        gameState.currentKanji.keyword,
+                        kanjiArea.x + kanjiArea.size / 2,
+                        kanjiArea.y + kanjiArea.size + 25
+                    );
+                }
+
+                // Draw target strokes (completed ones faded, current one highlighted)
+                for (let i = 0; i <= gameState.currentStrokeIndex && i < gameState.currentKanji.strokes.length; i++) {
+                    const stroke = gameState.currentKanji.strokes[i];
+                    const isCurrent = i === gameState.currentStrokeIndex;
+
+                    ctx.beginPath();
+                    for (let j = 0; j < stroke.points.length; j++) {
+                        const x = kanjiArea.x + stroke.points[j][0] * kanjiArea.size;
+                        const y = kanjiArea.y + stroke.points[j][1] * kanjiArea.size;
+                        if (j === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+
+                    if (isCurrent) {
+                        // Check if rainbow
+                        const event = gameState.beatEvents[gameState.currentBeatEventIndex];
+                        const isRainbow = event && event.isRainbow && gameState.lives < gameState.maxLives;
+
+                        if (isRainbow) {
+                            // Rainbow gradient
+                            const gradient = ctx.createLinearGradient(
+                                kanjiArea.x, kanjiArea.y,
+                                kanjiArea.x + kanjiArea.size, kanjiArea.y + kanjiArea.size
+                            );
+                            gradient.addColorStop(0, '#ff0000');
+                            gradient.addColorStop(0.2, '#ff8800');
+                            gradient.addColorStop(0.4, '#ffff00');
+                            gradient.addColorStop(0.6, '#00ff00');
+                            gradient.addColorStop(0.8, '#0088ff');
+                            gradient.addColorStop(1, '#ff00ff');
+                            ctx.strokeStyle = gradient;
+                        } else {
+                            ctx.strokeStyle = '#00d4ff';
+                        }
+                        ctx.lineWidth = 6;
+                        ctx.shadowColor = ctx.strokeStyle;
+                        ctx.shadowBlur = 15;
+                    } else {
+                        ctx.strokeStyle = 'rgba(0, 212, 255, 0.3)';
+                        ctx.lineWidth = 4;
+                        ctx.shadowBlur = 0;
+                    }
+
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            // Draw user's current stroke
+            if (gameState.isDrawing && gameState.drawnPoints.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#ff00ff';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowColor = '#ff00ff';
+                ctx.shadowBlur = 10;
+
+                for (let i = 0; i < gameState.drawnPoints.length; i++) {
+                    const x = gameState.drawnPoints[i].x * canvas.width;
+                    const y = gameState.drawnPoints[i].y * canvas.height;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Draw timing indicator
+            if (gameState.currentKanji) {
+                const event = gameState.beatEvents[gameState.currentBeatEventIndex];
+                if (event) {
+                    const arrivalTime = event.beatTime;
+                    const timeToArrival = arrivalTime - currentTime;
+
+                    if (timeToArrival > 0 && timeToArrival < FLIGHT_DURATION) {
+                        const progress = 1 - (timeToArrival / FLIGHT_DURATION);
+                        const indicatorY = kanjiArea.y - 80 + progress * 60;
+
+                        ctx.beginPath();
+                        ctx.arc(kanjiArea.x + kanjiArea.size / 2, indicatorY, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = '#00d4ff';
+                        ctx.shadowColor = '#00d4ff';
+                        ctx.shadowBlur = 15;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+
+            // Draw conveyor belt timing lines
+            drawConveyorBelt(currentTime, kanjiArea);
+        }
+
+        function drawConveyorBelt(currentTime, kanjiArea) {
+            const bpm = selectedBeatmap.meta.bpm;
+            const beatInterval = 60 / bpm;
+            const conveyorY = kanjiArea.y - 30;
+            const conveyorWidth = kanjiArea.size;
+            const conveyorX = kanjiArea.x;
+
+            // Draw base line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(conveyorX, conveyorY);
+            ctx.lineTo(conveyorX + conveyorWidth, conveyorY);
+            ctx.stroke();
+
+            // Draw beat markers
+            for (let i = 0; i < 8; i++) {
+                const beatTime = Math.floor(currentTime / beatInterval) * beatInterval + i * beatInterval;
+                const offset = (beatTime - currentTime) / (beatInterval * 4);
+
+                if (offset >= 0 && offset < 1) {
+                    const x = conveyorX + conveyorWidth / 2 + offset * conveyorWidth / 2;
+                    const alpha = 1 - offset;
+
+                    ctx.strokeStyle = `rgba(0, 212, 255, ${alpha * 0.5})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x, conveyorY - 10);
+                    ctx.lineTo(x, conveyorY + 10);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function getKanjiArea() {
+            const size = Math.min(canvas.width, canvas.height) * 0.4;
+            const x = (canvas.width - size) / 2;
+            const y = canvas.height - size - canvas.height * 0.1;
+            return { x, y, size };
+        }
+
+        // ===== GAME CONTROLS =====
+        function togglePause() {
+            gameState.isPaused = !gameState.isPaused;
+            document.getElementById('pause-overlay').classList.toggle('active', gameState.isPaused);
+
+            if (gameState.isPaused) {
+                audioContext.suspend();
+            } else {
+                audioContext.resume();
+            }
+        }
+
+        function resumeGame() {
+            gameState.isPaused = false;
+            document.getElementById('pause-overlay').classList.remove('active');
+            audioContext.resume();
+        }
+
+        function quitToMenu() {
+            gameState.isPlaying = false;
+            gameState.isPaused = false;
+            document.getElementById('pause-overlay').classList.remove('active');
+            stopSong();
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            showScreen('menu-screen');
+        }
+
+        function endGame(completed) {
+            gameState.isPlaying = false;
+            stopSong();
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            // Calculate stats
+            const maxScore = gameState.beatEvents.length * 100;
+            const percentage = maxScore > 0 ? Math.round((gameState.score / maxScore) * 100) : 0;
+
+            // Determine tier
+            let tier = 'D';
+            if (percentage >= 95) tier = 'S';
+            else if (percentage >= 85) tier = 'A';
+            else if (percentage >= 70) tier = 'B';
+            else if (percentage >= 50) tier = 'C';
+
+            // Tier colors
+            const tierColors = {
+                S: '#ffd700',
+                A: '#00ff88',
+                B: '#00d4ff',
+                C: '#ffaa00',
+                D: '#ff4444'
+            };
+
+            document.getElementById('game-over-title').textContent = completed ? 'Song Complete!' : 'Game Over';
+            document.getElementById('tier-display').textContent = tier;
+            document.getElementById('tier-display').style.color = tierColors[tier];
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('score-breakdown').textContent = `${percentage}% accuracy`;
+
+            showScreen('game-over-screen');
+        }
+
+        function retryGame() {
+            startGame(gameState.difficulty);
+        }
+
+        // ===== START =====
+        window.addEventListener('load', init);
+
+        // Handle visibility change (pause when tab hidden)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && gameState.isPlaying && !gameState.isPaused) {
+                togglePause();
+            }
+        });
+    </script>
+</body>
+</html>
