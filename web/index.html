@@ -833,7 +833,11 @@
         function handlePointerStart(e) {
             if (!gameState.isPlaying || gameState.isPaused) return;
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            // Scale touch coordinates to match canvas pixel dimensions
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
 
             const windowState = isStrokeWindowActive();
             if (!windowState.isActive) {
@@ -855,7 +859,12 @@
         function handlePointerMove(e) {
             if (!gameState.isDrawing) return;
             const rect = canvas.getBoundingClientRect();
-            gameState.drawnPoints.push({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+            // Scale touch coordinates to match canvas pixel dimensions
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            gameState.drawnPoints.push({ x, y });
         }
 
         function handlePointerEnd() {
